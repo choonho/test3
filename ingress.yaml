@@ -1,0 +1,39 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: console-ingress
+  namespace: cloudforet
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "console.netwatch.ai"  # Change the hostname
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: console 
+                port:
+                  number: 80
+    - host: "console-v1.api.netwatch.ai"  # Change the hostname
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: console-api
+                port:
+                  number: 80
+    - host: "console-v2.api.netwatch.ai"  # Change the hostname
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: console-api-v2-rest
+                port:
+                  number: 80
