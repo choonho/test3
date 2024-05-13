@@ -4,10 +4,19 @@ kind: Ingress
 metadata:
   name: console-ingress
   namespace: cloudforet
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: nginx
+  tls:
+  - hosts:
+    - console.example.com
+    - console-v1.api.example.com
+    - console-v2.api.example.com
+    - webhook.api.example.com
+    secretName: console-tls
   rules:
-    - host: "console.netwatch.ai"  # Change the hostname
+    - host: "console.example.com"  # Change the hostname
       http:
         paths:
           - path: /
@@ -17,7 +26,7 @@ spec:
                 name: console 
                 port:
                   number: 80
-    - host: "console-v1.api.netwatch.ai"  # Change the hostname
+    - host: "console-v1.api.example.com"  # Change the hostname
       http:
         paths:
           - path: /
@@ -27,7 +36,7 @@ spec:
                 name: console-api
                 port:
                   number: 80
-    - host: "console-v2.api.netwatch.ai"  # Change the hostname
+    - host: "console-v2.api.example.com"  # Change the hostname
       http:
         paths:
           - path: /
@@ -35,5 +44,15 @@ spec:
             backend:
               service:
                 name: console-api-v2-rest
+                port:
+                  number: 80
+    - host: "webhook.api.example.com"  # Change the hostname
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-rest
                 port:
                   number: 80
